@@ -36,6 +36,9 @@ var testWasmLite []byte
 //go:embed test-lite\.prod\.wasm
 var testWasmLiteProd []byte
 
+//go:embed test-zig\.wasm
+var testWasmZig []byte
+
 func TestHostModule(t *testing.T) {
 	ctx := context.Background()
 	r := wazero.NewRuntimeWithConfig(ctx, wazero.NewRuntimeConfig())
@@ -60,6 +63,7 @@ func TestHostModule(t *testing.T) {
 		{`testWasmLite`, testWasmLite, 128, 1.5 * 1024 * 1024},
 		{`testWasmEasyProd`, testWasmEasyProd, 256, 1 * 1024 * 1024},
 		{`testWasmLiteProd`, testWasmLiteProd, 128, 1.5 * 1024 * 1024},
+		{`testWasmZig`, testWasmZig, 128, 1.5 * 1024 * 1024},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			cfg := wazero.NewModuleConfig().WithStdout(os.Stdout)

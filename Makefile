@@ -12,8 +12,11 @@ wasm-lite:
 	@cd test-lite && tinygo build -buildmode=wasi-legacy -target=wasi -opt=2 -gc=leaking -scheduler=none -o ../host/test-lite.wasm
 wasm-lite-prod:
 	@cd test-lite && tinygo build -buildmode=wasi-legacy -target=wasi -opt=s -gc=leaking -scheduler=none -o ../host/test-lite.prod.wasm -no-debug
+wasm-zig:
+	@cd test-zig && zig build --release=small
+	@cp test-zig/zig-out/bin/test-zig.wasm host/test-zig.wasm
 wasm: wasm-dev wasm-prod
-wasm-dev: wasm-easy wasm-lite
+wasm-dev: wasm-easy wasm-lite wasm-zig
 wasm-prod: wasm-easy-prod wasm-lite-prod
 
 test:
@@ -47,7 +50,10 @@ gen-test-lite:
 gen-test-lite-install:
 	go install github.com/aperturerobotics/protobuf-go-lite/cmd/protoc-gen-go-lite@latest
 
-gen-all: gen gen-test-lite
+gen-test-zig:
+	@cd test-zig && zig build gen-proto
+
+gen-all: gen gen-test-lite gen-test-zig
 
 cloc:
 	@cloc . --exclude-dir=_example,_dist,internal,cmd --exclude-ext=pb.go
