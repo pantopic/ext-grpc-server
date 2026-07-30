@@ -113,7 +113,7 @@ func (h *handlerBidirectionalStream) RecvMsg(m any) (err error) {
 			log.Fatalf(`Unable to unmarshal message in RecvMsg: %v`, err)
 		}
 	case <-h.ctx.Done():
-		// close(h.data)
+		return io.EOF
 	}
 	return
 }
