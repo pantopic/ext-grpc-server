@@ -57,7 +57,11 @@ func (h *handlerClientStream) Context() context.Context {
 }
 
 func (h *handlerClientStream) send(msg []byte, err error) {
-	h.data <- resp{msg, err}
+	select {
+	case h.data <- resp{append([]byte{}, msg...), err}:
+	case <-h.ctx.Done():
+		return
+	}
 }
 
 func (h *handlerClientStream) SendMsg(m any) (err error) {
@@ -99,7 +103,7 @@ func (h *handlerClientStream) RecvMsg(m any) (err error) {
 		}
 		err = proto.Unmarshal(r.data, m.(proto.Message))
 	case <-h.ctx.Done():
-		close(h.data)
+		return io.EOF
 	}
 	return
 }

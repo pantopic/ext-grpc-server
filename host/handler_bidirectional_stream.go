@@ -92,7 +92,11 @@ func (h *handlerBidirectionalStream) SendMsg(m any) (err error) {
 }
 
 func (h *handlerBidirectionalStream) send(msg []byte, err error) {
-	h.data <- resp{append([]byte{}, msg...), err}
+	select {
+	case h.data <- resp{append([]byte{}, msg...), err}:
+	case <-h.ctx.Done():
+		return
+	}
 }
 
 func (h *handlerBidirectionalStream) RecvMsg(m any) (err error) {
