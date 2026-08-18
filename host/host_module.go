@@ -45,6 +45,8 @@ type hostModule struct {
 	mux    map[net.Listener]cmux.CMux
 }
 
+type sendFunc = func(ctx context.Context, msg []byte, err error)
+
 func New(opts ...Option) (h *hostModule) {
 	h = &hostModule{
 		mux: make(map[net.Listener]cmux.CMux),
@@ -63,18 +65,23 @@ func (h *hostModule) Name() string {
 func (h *hostModule) Register(ctx context.Context, r wazero.Runtime) (err error) {
 	builder := r.NewHostModuleBuilder(Name)
 	register := func(name string, fn func(ctx context.Context, m api.Module, stack []uint64)) {
-		builder = builder.NewFunctionBuilder().WithGoModuleFunction(api.GoModuleFunc(fn), nil, nil).Export(name)
+		builder = builder.NewFunctionBuilder().WithGoModuleFunction(api.GoModuleFunc(fn), []api.ValueType{api.ValueTypeI64}, nil).Export(name)
 	}
 	for name, fn := range map[string]any{
 		"__grpc_server_send": func(ctx context.Context, msg []byte, err error) {
-			get[func([]byte, error)](ctx, ctxKeySend)(msg, err)
+			get[sendFunc](ctx, ctxKeySend)(ctx, msg, err)
 		},
 	} {
 		switch fn := fn.(type) {
 		case func(context.Context, []byte, error):
-			register(name, func(ctx context.Context, m api.Module, stack []uint64) {
+			register(name, func(ctx context.Context, mod api.Module, stack []uint64) {
 				meta := get[*meta](ctx, ctxKeyMeta)
-				fn(ctx, getMsgCopy(m, meta), getError(m, meta))
+				var data []byte
+				if uint32(stack[0]) > 0 {
+					buf, _ := mod.Memory().Read(uint32(stack[0]>>32), uint32(stack[0]))
+					data = append(data[:0], buf...)
+				}
+				fn(ctx, data, getError(mod, meta, data))
 			})
 		default:
 			log.Panicf("Method signature implementation missing: %#v", fn)
@@ -118,14 +125,14 @@ func (h *hostModule) ContextCopy(dst, src context.Context) context.Context {
 			dst = context.WithValue(dst, ctxKeyNext, v.(chan []byte))
 		}
 		if v := src.Value(ctxKeySend); v != nil {
-			dst = context.WithValue(dst, ctxKeySend, v.(func([]byte, error)))
+			dst = context.WithValue(dst, ctxKeySend, v.(sendFunc))
 		}
 	}
 	return dst
 }
 
 // RegisterServices attaches the grpc service(s) to the grpc server
-// Called once before server open, usually given a module instance pool
+// Called once before server open
 func (h *hostModule) RegisterServices(ctx context.Context, s *grpc.Server, pool wazeropool.Instance, ctxCopiers ...ContextCopy) error {
 	ctx = wazeropool.ContextSet(ctx, pool)
 	ctxCopiers = append(ctxCopiers, wazeropool.ContextCopy)
@@ -277,15 +284,21 @@ func msgBuf(m api.Module, meta *meta) []byte {
 	return read(m, meta.ptrMsg, 0, meta.ptrMsgCap)
 }
 
-func setMsg(m api.Module, meta *meta, msg []byte) {
-	copy(msgBuf(m, meta)[:len(msg)], msg)
+func setMsg(m api.Module, meta *meta, msg []byte) error {
+	buf := msgBuf(m, meta)
+	if len(msg) > cap(buf) {
+		writeUint32(m, meta.ptrMsgLen, 0)
+		return ErrMessageTooLarge
+	}
+	copy(buf[:len(msg)], msg)
 	writeUint32(m, meta.ptrMsgLen, uint32(len(msg)))
+	return nil
 }
 
-func getError(m api.Module, meta *meta) error {
+func getError(m api.Module, meta *meta, buf []byte) error {
 	c := getErrCode(m, meta)
 	if c != codes.OK {
-		return status.New(c, string(getMsg(m, meta))).Err()
+		return status.New(c, string(buf)).Err()
 	}
 	return nil
 }

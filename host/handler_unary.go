@@ -55,9 +55,9 @@ func (h *handlerUnary) Context() context.Context {
 	return h.ctx
 }
 
-func (h *handlerUnary) send(msg []byte, err error) {
+func (h *handlerUnary) send(ctx context.Context, msg []byte, err error) {
 	select {
-	case h.data <- resp{append([]byte{}, msg...), err}:
+	case h.data <- resp{msg, err}:
 	case <-h.ctx.Done():
 		return
 	}
@@ -68,11 +68,14 @@ func (h *handlerUnary) SendMsg(m any) (err error) {
 	if err != nil {
 		panic(err)
 	}
+	ctx := h.ctx
 	h.pool.Run(func(mod api.Module) {
 		setMethod(mod, h.meta, []byte(h.method))
-		setMsg(mod, h.meta, data)
+		if err = setMsg(mod, h.meta, data); err != nil {
+			return
+		}
 		setErrCode(mod, h.meta, codes.OK)
-		if _, err = mod.ExportedFunction("__grpc_server_unary").Call(h.ctx); err != nil {
+		if _, err = mod.ExportedFunction("__grpc_server_unary").Call(ctx); err != nil {
 			return
 		}
 	})

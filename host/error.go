@@ -4,6 +4,11 @@ import (
 	"google.golang.org/grpc/codes"
 )
 
+var ErrMessageTooLarge = Error{
+	code: codes.InvalidArgument,
+	msg:  "message too large",
+}
+
 type Error struct {
 	code codes.Code
 	msg  string

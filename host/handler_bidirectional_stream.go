@@ -80,7 +80,9 @@ func (h *handlerBidirectionalStream) SendMsg(m any) (err error) {
 				return
 			}
 		}
-		setMsg(mod, h.meta, msg)
+		if err = setMsg(mod, h.meta, msg); err != nil {
+			return
+		}
 		fn := "__grpc_server_bidirectional_recv"
 		_, err = mod.ExportedFunction(fn).Call(h.ctx)
 		if err != nil {
@@ -91,7 +93,7 @@ func (h *handlerBidirectionalStream) SendMsg(m any) (err error) {
 	return
 }
 
-func (h *handlerBidirectionalStream) send(msg []byte, err error) {
+func (h *handlerBidirectionalStream) send(ctx context.Context, msg []byte, err error) {
 	select {
 	case h.data <- resp{append([]byte{}, msg...), err}:
 	case <-h.ctx.Done():

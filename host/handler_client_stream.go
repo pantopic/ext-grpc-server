@@ -56,7 +56,7 @@ func (h *handlerClientStream) Context() context.Context {
 	return h.ctx
 }
 
-func (h *handlerClientStream) send(msg []byte, err error) {
+func (h *handlerClientStream) send(ctx context.Context, msg []byte, err error) {
 	select {
 	case h.data <- resp{append([]byte{}, msg...), err}:
 	case <-h.ctx.Done():
@@ -81,7 +81,9 @@ func (h *handlerClientStream) SendMsg(m any) (err error) {
 				return
 			}
 		}
-		setMsg(mod, h.meta, msg)
+		if err = setMsg(mod, h.meta, msg); err != nil {
+			return
+		}
 		_, err := mod.ExportedFunction("__grpc_server_client_stream_recv").Call(h.ctx)
 		if err != nil {
 			log.Println(err)

@@ -234,7 +234,7 @@ func __grpc_server_http() {
 
 //go:wasm-module pantopic/wazero-grpc-server
 //export __grpc_server_send
-func send()
+func send(uint64)
 
 //go:wasm-module pantopic/wazero-grpc-server
 //export __grpc_server_close

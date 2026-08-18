@@ -42,7 +42,7 @@ func (h *grpcHandler) handle(f handlerFactory) func(srv any, serverStream grpc.S
 				if errInbound == io.EOF {
 					clientStream.CloseSend()
 				} else {
-					return status.Errorf(codes.Internal, "failed proxying s2c: %v", errInbound)
+					return errInbound
 				}
 			case errOutbound := <-errChanOutbound:
 				serverStream.SetTrailer(clientStream.Trailer())
