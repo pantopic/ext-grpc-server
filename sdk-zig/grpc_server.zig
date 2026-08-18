@@ -1,6 +1,6 @@
 const std = @import("std");
 
-extern "pantopic/wazero-grpc-server" fn __grpc_server_send() void;
+extern "pantopic/wazero-grpc-server" fn __grpc_server_send(u64) void;
 
 pub const UnaryFn = *const fn (req: []const u8) anyerror!void;
 pub const OpenFn = *const fn () anyerror!void;
@@ -202,16 +202,16 @@ pub fn Server(comptime cfg: Config) type {
         }
 
         pub fn send(b: []const u8) anyerror!void {
-            err_code = code_ok;
-            setMsg(b);
-            __grpc_server_send();
-            return getErr();
+            return sendErr(code_ok, b);
         }
 
         pub fn sendErr(code: u32, b: []const u8) anyerror!void {
             err_code = code;
-            setMsg(b);
-            __grpc_server_send();
+            var res: u64 = b.len;
+            if (res > 0) {
+                res = res + (@as(u64, @intFromPtr(&b[0])) << 32);
+            }
+            __grpc_server_send(res);
             return getErr();
         }
 
