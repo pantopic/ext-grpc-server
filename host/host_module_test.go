@@ -144,6 +144,45 @@ func TestHostModule(t *testing.T) {
 					}
 				})
 			})
+			t.Run(`unaryAsync`, func(t *testing.T) {
+				t.Run(`basic`, func(t *testing.T) {
+					req := &pb.TestRequest{
+						Foo: 1,
+					}
+					res, err := client.Test(ctx, req)
+					if err != nil {
+						t.Fatalf(`%v`, err)
+					}
+					if res.Bar != req.Foo {
+						t.Fatalf(`Incorrect response value in test response: %d`, res.Bar)
+					}
+					res2, err := client.Retest(ctx, &pb.RetestRequest{
+						Bar: 11,
+					})
+					if err != nil {
+						t.Fatalf(`%v`, err)
+					}
+					if res2.Foo != 11 {
+						t.Fatalf(`Incorrect response value in retest response: %d`, res2.Foo)
+					}
+				})
+				t.Run(`bytes`, func(t *testing.T) {
+					req := &pb.TestBytesRequest{
+						Key: []byte(`test-key`),
+						Val: []byte(`test-value`),
+					}
+					res, err := client.TestBytes(ctx, req)
+					if err != nil {
+						t.Fatalf(`%v`, err)
+					}
+					if res.Code != 1 {
+						t.Fatalf(`Incorrect response code in test response: %d`, res.Code)
+					}
+					if !bytes.Equal(res.Data, []byte(`ACK`)) {
+						t.Fatalf(`Incorrect response data in test response: %s`, res.Data)
+					}
+				})
+			})
 			t.Run(`client-stream`, func(t *testing.T) {
 				cs, err := client.ClientStream(ctx)
 				if err != nil {

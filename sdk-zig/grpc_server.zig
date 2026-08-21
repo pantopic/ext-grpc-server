@@ -115,7 +115,6 @@ const Kind = enum {
     bidirectional_recv,
     bidirectional_close,
 };
-
 fn stringLessThan(a: []const u8, b: []const u8) bool {
     return std.mem.lessThan(u8, a, b);
 }
@@ -320,7 +319,6 @@ pub fn Server(comptime cfg: Config) type {
             const m = getMethod();
             if (m.len < 3 or m[0] != '/') return invalidMethod(m);
             const idx = std.mem.indexOfScalarPos(u8, m, 1, '/') orelse return invalidMethod(m);
-            if (std.mem.indexOfScalarPos(u8, m, idx + 1, '/') != null) return invalidMethod(m);
             return .{ .service = m[1..idx], .method = m[idx + 1 ..] };
         }
 
