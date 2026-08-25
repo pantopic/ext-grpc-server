@@ -1,3 +1,3 @@
-module github.com/pantopic/wazero-grpc-server/sdk-go
+module github.com/pantopic/ext-grpc-server/sdk-go
 
 go 1.24.3

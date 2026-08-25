@@ -1,8 +1,8 @@
 package grpc_server
 
 import (
-	"github.com/pantopic/wazero-grpc-server/sdk-go/codes"
-	"github.com/pantopic/wazero-grpc-server/sdk-go/status"
+	"github.com/pantopic/ext-grpc-server/sdk-go/codes"
+	"github.com/pantopic/ext-grpc-server/sdk-go/status"
 )
 
 type Error interface {

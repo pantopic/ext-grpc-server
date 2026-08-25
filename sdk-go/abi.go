@@ -6,7 +6,7 @@ import (
 	"strings"
 	"unsafe"
 
-	"github.com/pantopic/wazero-grpc-server/sdk-go/codes"
+	"github.com/pantopic/ext-grpc-server/sdk-go/codes"
 )
 
 var (
@@ -232,11 +232,11 @@ func __grpc_server_http() {
 	errCode = codes.Code(uint32(code))
 }
 
-//go:wasm-module pantopic/wazero-grpc-server
+//go:wasm-module pantopic/ext-grpc-server
 //export __grpc_server_send
-func send()
+func send(uint64)
 
-//go:wasm-module pantopic/wazero-grpc-server
+//go:wasm-module pantopic/ext-grpc-server
 //export __grpc_server_close
 // func close()
 

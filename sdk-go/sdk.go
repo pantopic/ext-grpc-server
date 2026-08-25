@@ -1,7 +1,9 @@
 package grpc_server
 
 import (
-	"github.com/pantopic/wazero-grpc-server/sdk-go/codes"
+	"unsafe"
+
+	"github.com/pantopic/ext-grpc-server/sdk-go/codes"
 )
 
 type Service struct {
@@ -78,16 +80,16 @@ func (s *Service) BidirectionalStream(name string,
 }
 
 func Send(b []byte) error {
-	errCode = codes.OK
-	setMsg(b)
-	send()
-	return getErr()
+	return SendErr(codes.OK, b)
 }
 
 func SendErr(c codes.Code, b []byte) error {
 	errCode = c
-	setMsg(b)
-	send()
+	res := uint64(len(b))
+	if len(b) > 0 {
+		res += uint64(uintptr(unsafe.Pointer(&b[0]))) << 32
+	}
+	send(res)
 	return getErr()
 }
 

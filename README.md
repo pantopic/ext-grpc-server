@@ -4,9 +4,9 @@ A [wazero](https://pkg.go.dev/github.com/tetratelabs/wazero) host module, ABI an
 
 ## Host Module
 
-[![Go Reference](https://godoc.org/github.com/pantopic/wazero-grpc-server/host?status.svg)](https://godoc.org/github.com/pantopic/wazero-grpc-server/host)
-[![Go Report Card](https://goreportcard.com/badge/github.com/pantopic/wazero-grpc-server/host)](https://goreportcard.com/report/github.com/pantopic/wazero-grpc-server/host)
-[![Go Coverage](https://github.com/pantopic/wazero-grpc-server/wiki/host/coverage.svg)](https://raw.githack.com/wiki/pantopic/wazero-grpc-server/host/coverage.html)
+[![Go Reference](https://godoc.org/github.com/pantopic/ext-grpc-server/host?status.svg)](https://godoc.org/github.com/pantopic/ext-grpc-server/host)
+[![Go Report Card](https://goreportcard.com/badge/github.com/pantopic/ext-grpc-server/host)](https://goreportcard.com/report/github.com/pantopic/ext-grpc-server/host)
+[![Go Coverage](https://github.com/pantopic/ext-grpc-server/wiki/host/coverage.svg)](https://raw.githack.com/wiki/pantopic/ext-grpc-server/host/coverage.html)
 
 First register the host module with the runtime
 
@@ -22,7 +22,7 @@ import (
 
 	"github.com/pantopic/wazero-pool"
 
-	"github.com/pantopic/wazero-grpc-server/host"
+	"github.com/pantopic/ext-grpc-server/host-wazero"
 )
 
 //go:embed test\.wasm
@@ -52,8 +52,8 @@ func main() {
 
 ## Guest SDK (Go)
 
-[![Go Reference](https://godoc.org/github.com/pantopic/wazero-grpc-server/grpc-server-go?status.svg)](https://godoc.org/github.com/pantopic/wazero-grpc-server/grpc-server-go)
-[![Go Report Card](https://goreportcard.com/badge/github.com/pantopic/wazero-grpc-server/grpc-server-go)](https://goreportcard.com/report/github.com/pantopic/wazero-grpc-server/grpc-server-go)
+[![Go Reference](https://godoc.org/github.com/pantopic/ext-grpc-server/grpc-server-go?status.svg)](https://godoc.org/github.com/pantopic/ext-grpc-server/grpc-server-go)
+[![Go Report Card](https://goreportcard.com/badge/github.com/pantopic/ext-grpc-server/grpc-server-go)](https://goreportcard.com/report/github.com/pantopic/ext-grpc-server/grpc-server-go)
 
 Then you can import the guest SDK into your WASI module to export your gRPC service description at runtime and receive gRPC requests in WASM.
 
@@ -61,10 +61,10 @@ Then you can import the guest SDK into your WASI module to export your gRPC serv
 package main
 
 import (
-	"github.com/pantopic/wazero-grpc-server/sdk-go"
-	"github.com/pantopic/wazero-grpc-server/sdk-go/codes"
+	"github.com/pantopic/ext-grpc-server/sdk-go"
+	"github.com/pantopic/ext-grpc-server/sdk-go/codes"
 
-	"github.com/pantopic/wazero-grpc-server/test-lite/pb"
+	"github.com/pantopic/ext-grpc-server/test-lite/pb"
 )
 
 func init() {
@@ -93,7 +93,7 @@ func test(b []byte) (err error) {
 
 ```
 
-The [guest SDK](https://pkg.go.dev/github.com/pantopic/wazero-grpc-server/grpc-server-go) has no dependencies outside the Go std lib.
+The [guest SDK](https://pkg.go.dev/github.com/pantopic/ext-grpc-server/grpc-server-go) has no dependencies outside the Go std lib.
 The guest SDK is serialization agnostic in order to provide users with more control over performance, compile time and binary size.
 
 See examples for protobuf message serialization options:

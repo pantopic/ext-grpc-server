@@ -53,9 +53,12 @@ func (h *handlerServerStream) Context() context.Context {
 	return h.ctx
 }
 
-func (h *handlerServerStream) send(msg []byte, err error) {
-	d := resp{msg, err}
-	h.data <- d
+func (h *handlerServerStream) send(ctx context.Context, msg []byte, err error) {
+	select {
+	case h.data <- resp{append([]byte{}, msg...), err}:
+	case <-h.ctx.Done():
+		return
+	}
 }
 
 func (h *handlerServerStream) SendMsg(m any) (err error) {
@@ -65,7 +68,9 @@ func (h *handlerServerStream) SendMsg(m any) (err error) {
 	}
 	h.pool.Run(func(mod api.Module) {
 		setMethod(mod, h.meta, []byte(h.method))
-		setMsg(mod, h.meta, msg)
+		if err = setMsg(mod, h.meta, msg); err != nil {
+			return
+		}
 		mod.ExportedFunction("__grpc_server_server_stream_open").Call(h.ctx)
 	})
 	return
@@ -84,7 +89,7 @@ func (h *handlerServerStream) RecvMsg(m any) (err error) {
 		}
 		err = proto.Unmarshal(d.data, m.(proto.Message))
 	case <-h.ctx.Done():
-		close(h.data)
+		return io.EOF
 	}
 	return
 }
