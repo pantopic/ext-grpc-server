@@ -603,7 +603,7 @@ const file_test_proto_rawDesc = "" +
 	"\tTestBytes\x12\x16.test.TestBytesRequest\x1a\x17.test.TestBytesResponse\"\x00\x12I\n" +
 	"\fClientStream\x12\x19.test.ClientStreamRequest\x1a\x1a.test.ClientStreamResponse\"\x00(\x01\x12I\n" +
 	"\fServerStream\x12\x19.test.ServerStreamRequest\x1a\x1a.test.ServerStreamResponse\"\x000\x01\x12`\n" +
-	"\x13BidirectionalStream\x12 .test.BidirectionalStreamRequest\x1a!.test.BidirectionalStreamResponse\"\x00(\x010\x01B0Z.github.com/pantopic/wazero-grpc-server/test;pbb\x06proto3"
+	"\x13BidirectionalStream\x12 .test.BidirectionalStreamRequest\x1a!.test.BidirectionalStreamResponse\"\x00(\x010\x01B-Z+github.com/pantopic/ext-grpc-server/test;pbb\x06proto3"
 
 var (
 	file_test_proto_rawDescOnce sync.Once

@@ -21,7 +21,7 @@ import (
 	"github.com/pantopic/wazero-atomic/host"
 	"github.com/pantopic/wazero-pool"
 
-	"github.com/pantopic/wazero-grpc-server/host/pb"
+	"github.com/pantopic/ext-grpc-server/host-wazero/pb"
 )
 
 //go:embed test-easy\.wasm

@@ -1,5 +1,5 @@
-github.com/aperturerobotics/protobuf-go-lite v0.17.0 h1:paEC3KNvw+JnIyKAQZlMLh2h4nY6P/Hm0oc20eubYe4=
-github.com/aperturerobotics/protobuf-go-lite v0.17.0/go.mod h1:3Ay/E7iaw2KWLirK3+dDdNJZHK0hu8Y1/kKeYeUa+8s=
+github.com/VictoriaMetrics/easyproto v0.1.4 h1:r8cNvo8o6sR4QShBXQd1bKw/VVLSQma/V2KhTBPf+Sc=
+github.com/VictoriaMetrics/easyproto v0.1.4/go.mod h1:QlGlzaJnDfFd8Lk6Ci/fuLxfTo3/GThPs2KH23mv710=
 github.com/pantopic/ext-grpc-server/sdk-go v0.0.14 h1:p4cbOU3WEOCFApCHzg65mqBKJBsa3ulPu+NRpBfWoAw=
 github.com/pantopic/ext-grpc-server/sdk-go v0.0.14/go.mod h1:80sYV0H/vv9updbQp1sY8HQDjIEYk9U8SfizwJP4bQo=
 github.com/pantopic/wazero-atomic/sdk-go v0.0.3 h1:bFRWDzHGBIabQw/v5I53kaAZT3REhTtTk98ya5FV6Oo=

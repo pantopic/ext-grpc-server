@@ -3,10 +3,10 @@ package main
 import (
 	"github.com/pantopic/wazero-atomic/sdk-go"
 
-	"github.com/pantopic/wazero-grpc-server/sdk-go"
-	"github.com/pantopic/wazero-grpc-server/sdk-go/codes"
-	"github.com/pantopic/wazero-grpc-server/sdk-go/status"
-	"github.com/pantopic/wazero-grpc-server/test-lite/pb"
+	"github.com/pantopic/ext-grpc-server/sdk-go"
+	"github.com/pantopic/ext-grpc-server/sdk-go/codes"
+	"github.com/pantopic/ext-grpc-server/sdk-go/status"
+	"github.com/pantopic/ext-grpc-server/test-lite/pb"
 )
 
 var (
