@@ -1,6 +1,6 @@
 # sdk-zig
 
-Zig guest SDK for `pantopic/wazero-grpc-server`, equivalent to [sdk-go](../sdk-go).
+Zig guest SDK for `pantopic/ext-grpc-server`, equivalent to [sdk-go](../sdk-go).
 
 Services are declared at comptime and exported to the host via `server.register()`:
 

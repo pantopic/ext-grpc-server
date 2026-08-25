@@ -20,7 +20,7 @@ import (
 	"github.com/pantopic/wazero-pool"
 )
 
-const Name = "pantopic/wazero-grpc-server"
+const Name = "pantopic/ext-grpc-server"
 
 var (
 	ctxKeyMeta = Name + `/meta`

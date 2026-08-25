@@ -1,4 +1,4 @@
-module github.com/pantopic/wazero-grpc-server/host
+module github.com/pantopic/ext-grpc-server/host-wazero
 
 go 1.25.7
 

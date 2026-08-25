@@ -3,7 +3,7 @@ package grpc_server
 import (
 	"unsafe"
 
-	"github.com/pantopic/wazero-grpc-server/sdk-go/codes"
+	"github.com/pantopic/ext-grpc-server/sdk-go/codes"
 )
 
 type Service struct {

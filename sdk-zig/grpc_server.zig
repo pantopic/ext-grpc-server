@@ -1,6 +1,6 @@
 const std = @import("std");
 
-extern "pantopic/wazero-grpc-server" fn __grpc_server_send(u64) void;
+extern "pantopic/ext-grpc-server" fn __grpc_server_send(u64) void;
 
 pub const UnaryFn = *const fn (req: []const u8) anyerror!void;
 pub const OpenFn = *const fn () anyerror!void;

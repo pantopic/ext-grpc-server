@@ -31,7 +31,7 @@ import (
 	"context"
 	"errors"
 
-	"github.com/pantopic/wazero-grpc-server/sdk-go/codes"
+	"github.com/pantopic/ext-grpc-server/sdk-go/codes"
 )
 
 // Status references google.golang.org/grpc/internal/status. It represents an
