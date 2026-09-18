@@ -4,6 +4,6 @@ go 1.25.7
 
 require (
 	github.com/VictoriaMetrics/easyproto v0.1.4
-	github.com/pantopic/ext-grpc-server/sdk-go v0.0.14
+	github.com/pantopic/ext-grpc-server/sdk-go v0.0.16
 	github.com/pantopic/wazero-atomic/sdk-go v0.0.3
 )
