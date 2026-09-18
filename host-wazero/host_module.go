@@ -163,6 +163,7 @@ func (h *hostModule) ServerStart(ctx context.Context, lis net.Listener, tlsCrt, 
 			Time:    2 * time.Hour,
 			Timeout: 20 * time.Second,
 		}),
+		grpc.MaxRecvMsgSize(4 << 30), // 4 GiB
 	}
 	var grpcServer = grpc.NewServer(opts...)
 	err = h.RegisterServices(ctx, grpcServer, pool, ctxCopy...)
