@@ -33,7 +33,7 @@ pub const HttpHandler = *const fn (method: []const u8, path: []const u8, body: [
 
 pub const Config = struct {
     method_cap: u32 = 256,
-    msg_cap: u32 = 1024 * 1024,
+    msg_cap: u32 = 2 * 1024 * 1024,
     services: []const Service,
     http: ?HttpHandler = null,
 };
