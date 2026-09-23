@@ -18,7 +18,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
-	"github.com/pantopic/wazero-atomic/host"
+	"github.com/pantopic/ext-atomic/host-wazero"
 	"github.com/pantopic/wazero-pool"
 
 	"github.com/pantopic/ext-grpc-server/host-wazero/pb"

@@ -3,8 +3,9 @@ module github.com/pantopic/ext-grpc-server/host-wazero
 go 1.25.7
 
 require (
-	github.com/pantopic/wazero-atomic/host v0.0.3
+	github.com/pantopic/ext-atomic/host-wazero v0.0.4
 	github.com/pantopic/wazero-pool v0.0.6
+	github.com/soheilhy/cmux v0.1.5
 	github.com/tetratelabs/wazero v1.11.0
 	google.golang.org/grpc v1.74.2
 	google.golang.org/protobuf v1.36.6

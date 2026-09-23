@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/pantopic/wazero-atomic/sdk-go"
+	"github.com/pantopic/ext-atomic/sdk-go"
 
 	"github.com/pantopic/ext-grpc-server/sdk-go"
 	"github.com/pantopic/ext-grpc-server/sdk-go/codes"
