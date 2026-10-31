@@ -19,7 +19,7 @@ type grpcHandler struct {
 	pool wazeropool.Instance
 	meta *meta
 	ctx  context.Context
-	init []ContextCopy
+	init []ContextCopier
 }
 
 func (h *grpcHandler) handle(f handlerFactory) func(srv any, serverStream grpc.ServerStream) error {

@@ -82,7 +82,7 @@ func TestHostModule(t *testing.T) {
 					t.Fatalf(`%v`, err)
 				}
 			})
-			ctxCopy := []ContextCopy{modAtomic.ContextCopy}
+			ctxCopy := []ContextCopier{modAtomic.ContextCopy}
 			pool.Run(func(mod api.Module) {
 				meta := get[*meta](ctx, ctxKeyMeta)
 				if readUint32(mod, meta.ptrMethodCap) != tc.bufCapMethod {

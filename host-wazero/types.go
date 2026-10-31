@@ -10,4 +10,4 @@ import (
 
 type handlerFactory func(context.Context, wazeropool.Instance, *meta, string) grpc.ClientStream
 
-type ContextCopy = func(dst, src context.Context) context.Context
+type ContextCopier = func(dst, src context.Context) context.Context

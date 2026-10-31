@@ -133,7 +133,7 @@ func (h *hostModule) ContextCopy(dst, src context.Context) context.Context {
 
 // RegisterServices attaches the grpc service(s) to the grpc server
 // Called once before server open
-func (h *hostModule) RegisterServices(ctx context.Context, s *grpc.Server, pool wazeropool.Instance, ctxCopiers ...ContextCopy) error {
+func (h *hostModule) RegisterServices(ctx context.Context, s *grpc.Server, pool wazeropool.Instance, ctxCopiers ...ContextCopier) error {
 	ctx = wazeropool.ContextSet(ctx, pool)
 	ctxCopiers = append(ctxCopiers, wazeropool.ContextCopy)
 	meta := get[*meta](ctx, ctxKeyMeta)
@@ -153,7 +153,7 @@ func (h *hostModule) ServiceType() string {
 	return `grpc`
 }
 
-func (h *hostModule) ServerStart(ctx context.Context, lis net.Listener, tlsCrt, tlsKey string, pool wazeropool.Instance, ctxCopy ...ContextCopy) (err error) {
+func (h *hostModule) ServerStart(ctx context.Context, lis net.Listener, tlsCrt, tlsKey string, pool wazeropool.Instance, ctxCopy ...ContextCopier) (err error) {
 	var opts = []grpc.ServerOption{
 		grpc.KeepaliveEnforcementPolicy(keepalive.EnforcementPolicy{
 			MinTime:             5 * time.Second,
@@ -213,7 +213,7 @@ func (h *hostModule) ServerStop(ctx context.Context, lis net.Listener) (err erro
 	return
 }
 
-func (h *hostModule) registerService(s *grpc.Server, pool wazeropool.Instance, meta *meta, serviceName string, methods []string, ctx context.Context, ctxCopiers ...ContextCopy) {
+func (h *hostModule) registerService(s *grpc.Server, pool wazeropool.Instance, meta *meta, serviceName string, methods []string, ctx context.Context, ctxCopiers ...ContextCopier) {
 	handler := &grpcHandler{pool, meta, ctx, ctxCopiers}
 	fakeDesc := &grpc.ServiceDesc{
 		ServiceName: serviceName,
