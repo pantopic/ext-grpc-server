@@ -109,7 +109,7 @@ func (h *handlerBidirectionalStream) RecvMsg(m any) (err error) {
 		}
 		if d.err != nil {
 			log.Printf(`data err %v`, d.err)
-			return &Error{
+			return Error{
 				msg: d.err.Error(),
 			}
 		}

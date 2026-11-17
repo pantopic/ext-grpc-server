@@ -83,7 +83,7 @@ func (h *handlerServerStream) RecvMsg(m any) (err error) {
 			return io.EOF
 		}
 		if d.err != nil {
-			return &Error{
+			return Error{
 				msg: d.err.Error(),
 			}
 		}
