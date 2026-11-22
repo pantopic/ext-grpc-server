@@ -14,9 +14,11 @@ import (
 	"github.com/tetratelabs/wazero/api"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/keepalive"
 	"google.golang.org/grpc/status"
 
+	"github.com/pantopic/cluster/iface"
 	"github.com/pantopic/wazero-pool"
 )
 
@@ -43,6 +45,8 @@ type hostModule struct {
 
 	mux map[net.Listener]cmux.CMux
 }
+
+var _ pantopic.ServiceProvider = (*hostModule)(nil)
 
 type sendFunc = func(ctx context.Context, msg []byte, err error)
 
@@ -163,6 +167,14 @@ func (h *hostModule) ServerStart(ctx context.Context, lis net.Listener, tlsCrt, 
 			Timeout: 20 * time.Second,
 		}),
 		grpc.MaxRecvMsgSize(4 << 30), // 4 GiB
+		grpc.MaxSendMsgSize(4 << 30), // 4 GiB
+	}
+	if tlsCrt != "" && tlsKey != "" {
+		fc, err := credentials.NewServerTLSFromFile(tlsCrt, tlsKey)
+		if err != nil {
+			panic(err)
+		}
+		opts = append(opts, grpc.Creds(fc))
 	}
 	var grpcServer = grpc.NewServer(opts...)
 	err = h.RegisterServices(ctx, grpcServer, pool, ctxCopy...)
@@ -174,7 +186,7 @@ func (h *hostModule) ServerStart(ctx context.Context, lis net.Listener, tlsCrt, 
 	httpListener := m.Match(cmux.Any())
 	go func() {
 		if err = grpcServer.Serve(grpcListener); err != nil {
-			panic(err)
+			log.Printf(`gRPC server error: %v`, err)
 		}
 	}()
 	httpServer := &http.Server{
@@ -183,20 +195,17 @@ func (h *hostModule) ServerStart(ctx context.Context, lis net.Listener, tlsCrt, 
 	go func() {
 		if tlsCrt != "" && tlsKey != "" {
 			if err = httpServer.ServeTLS(httpListener, tlsCrt, tlsKey); err != nil {
-				panic(err)
+				log.Printf(`https server error: %v`, err)
 			}
 		} else {
 			if err = httpServer.Serve(httpListener); err != nil {
-				panic(err)
+				log.Printf(`http server error: %v`, err)
 			}
-		}
-		if err = httpServer.Serve(httpListener); err != nil {
-			panic(err)
 		}
 	}()
 	go func() {
 		if err := m.Serve(); err != nil {
-			panic(err)
+			log.Printf(`mux server error: %v`, err)
 		}
 	}()
 	h.mux[lis] = m
@@ -209,6 +218,12 @@ func (h *hostModule) ServerStop(ctx context.Context, lis net.Listener) (err erro
 		return
 	}
 	m.Close()
+	delete(h.mux, lis)
+	return
+}
+
+func (h *hostModule) ServerUpdate(ctx context.Context, pool wazeropool.Instance, ctxCopy ...ContextCopier) (err error) {
+
 	return
 }
 
